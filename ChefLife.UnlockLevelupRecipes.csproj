@@ -1,0 +1,68 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>ChefLife.UnlockLevelupRecipes</AssemblyName>
+    <RootNamespace>ChefLife.UnlockLevelupRecipes</RootNamespace>
+    <Product>Chef Life Unlock Level up Recipes Plugin</Product>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ChefLifeDir Condition="'$(ChefLifeDir)' == ''">$(CHEFLIFE_DIR)</ChefLifeDir>
+    <ChefLifePluginsDir Condition="'$(ChefLifePluginsDir)' == '' and '$(ChefLifeDir)' != ''">$(ChefLifeDir)\BepInEx\plugins</ChefLifePluginsDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+    <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ChefLifeDir)' != ''">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(ChefLifeDir)\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="CyanideRuntime">
+      <HintPath>$(ChefLifeDir)\BepInEx\interop\CyanideRuntime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>$(ChefLifeDir)\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+
+    
+
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ChefLifeDir)\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="CheckChefLifeDir" BeforeTargets="BeforeBuild">
+    <Error
+      Condition="'$(ChefLifeDir)' == ''"
+      Text="ChefLifeDir n'est pas défini. Crée un Directory.Build.props local ou définis la variable d'environnement CHEFLIFE_DIR." />
+    <Error
+      Condition="'$(ChefLifeDir)' != '' and !Exists('$(ChefLifeDir)\BepInEx\interop\Assembly-CSharp.dll')"
+      Text="Assembly-CSharp.dll introuvable dans $(ChefLifeDir)\BepInEx\interop. Lance d'abord le jeu une fois avec BepInEx IL2CPP." />
+  </Target>
+
+  <Target Name="DeployToChefLifePlugins" AfterTargets="Build" Condition="'$(ChefLifePluginsDir)' != '' and Exists('$(ChefLifePluginsDir)')">
+    <MakeDir Directories="$(ChefLifePluginsDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ChefLifePluginsDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>

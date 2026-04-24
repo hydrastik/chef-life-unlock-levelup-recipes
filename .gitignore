@@ -1,0 +1,5 @@
+bin/
+obj/
+.vscode/
+
+Directory.Build.props
