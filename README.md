@@ -13,7 +13,7 @@
 
 ## Installation
 1. Install BepInEx 6 pre-0.2 into the game folder (launch game once to generate `BepInEx/interop`).
-2. Download **UnlockLevelupRecipes.dll**.
+2. Download **ChefLife.UnlockLevelupRecipes.dll**.
 3. Copy it to `<GameRoot>/BepInEx/plugins/`.
 4. Launch the game. 
 5. Start your save or a new one. 
